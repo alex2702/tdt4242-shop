@@ -7,7 +7,7 @@
   <div class="panel-body">
     <div class="row">
       <div class="col-xs-12 col-md-4">
-        <%= image_tag "/assets/placeholder_#{ rand(1..4) }.svg", class: "product-img", alt: "Product Image"%>
+        <%= image_tag "placeholder_#{ @product.id.digits.first }.svg", class: "product-img", alt: "Product Image"%>
       </div>
       <div class="col-xs-12 col-md-5">
         <h2><%= @product.name %></h2>

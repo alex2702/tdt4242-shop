@@ -18,7 +18,7 @@
    viewBox="0 0 500 300"
    enable-background="new 0 0 500 500"
    xml:space="preserve"
-   sodipodi:docname="placeholder_2.svg"
+   sodipodi:docname="placeholder_6.svg"
    inkscape:version="0.92.2 5c3e80d, 2017-08-06"><metadata
      id="metadata17"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
@@ -38,7 +38,7 @@
      showgrid="false"
      inkscape:zoom="1.335017601823596"
      inkscape:cx="156.4291656961287"
-     inkscape:cy="165.686934507588"
+     inkscape:cy="225.6112380454007"
      inkscape:window-x="63"
      inkscape:window-y="30"
      inkscape:window-maximized="1"
@@ -48,7 +48,7 @@
      width="500.25"
      height="500"
      id="rect2"
-     style="fill:#008000" /><g
+     style="fill:#0090ff;fill-opacity:0.5131579041" /><g
      id="g10"
      transform="translate(0,-100)"
      style="fill:#ffffff"><path
