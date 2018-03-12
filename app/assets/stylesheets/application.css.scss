@@ -151,3 +151,12 @@ form.multi-col-form {
     margin-bottom: 15px;
   }
 }
+
+@media (max-width: 991px) {
+  .text-right-sm {
+    text-align: left;
+    a {
+      margin-top: 2rem;
+    }
+  }
+}

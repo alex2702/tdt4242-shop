@@ -17,7 +17,9 @@
           <% @cart.cart_items.each do |cart_item| %>
             <tr>
               <td><strong><%= cart_item.product.name %></strong><br /><%= cart_item.product.description %></td>
-              <td class="text-right"><%= cart_item.amount %></td>
+              <td class="text-right" id="cart_item_<%= cart_item.id %>">
+                <%= render partial: 'cart_items/edit_amount', locals: {cart_item: cart_item} %>
+              </td>
               <td class="text-right"><%= number_to_currency(cart_item.product.price) %></td>
               <td class="text-right"><%= number_to_currency(cart_item.amount * cart_item.product.price) %></td>
               <td class="text-right">

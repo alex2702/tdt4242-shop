@@ -5,7 +5,11 @@ class Cart < ApplicationRecord
   def self.product_in_cart?(user_id, product_id)
     @cart = Cart.find_by(user_id: user_id)
     # check if any of the cart_items correspond to the given product and return result
-    @cart.cart_items.where(product_id: product_id).length > 0
+    if @cart.cart_items.where(product_id: product_id).blank?
+      0
+    else
+      @cart.cart_items.where(product_id: product_id).first.amount
+    end
   end
 
 end

@@ -18,8 +18,32 @@
 .caption {
   height: 130px;
   overflow: hidden;
+  position: relative;
 }
 
+.cart-counter {
+  position: absolute;
+  bottom: 0;
+  color: green;
+  font-weight: bold;
+}
+.cart-counter-show {
+  color: green;
+  font-weight: bold;
+}
+.amount-container {
+  width: 40%;
+  display: inline-block;
+
+  input[type='number'] {
+    width: 100%;
+  }
+}
+.amount-form-show {
+  input[type='submit'] {
+    margin-left: 15px;
+  }
+}
 .caption h4 {
   white-space: nowrap;
 }

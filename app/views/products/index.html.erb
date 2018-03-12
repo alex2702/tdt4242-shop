@@ -68,19 +68,27 @@
                   <h4 class="pull-right"><%= number_to_currency(product.price) %></h4>
                   <h4><%= link_to product.name, product %></h4>
                   <p><%= product.description %></p>
+                  <% if user_signed_in? and Cart.product_in_cart?(current_user.id, product.id) > 0 %>
+                    <div class="cart-counter"><%= "#{Cart.product_in_cart?(current_user.id, product.id)} in cart" %></div>
+                  <% end %>
                 </div>
               </div>
-              <div class="panel-footer text-right">
+              <div class="panel-footer">
                 <% if user_signed_in? %>
-                  <% if !Cart.product_in_cart?(current_user.id, product.id) and Product.find(product.id).stock_level > 0 %>
-                    <%= link_to 'Add to Cart', { controller: 'cart_items', action: 'add_to_cart', product_id: product.id, amount: 1 }, class: 'btn btn-primary', method: :post, remote: true %>
-                  <% elsif Product.find(product.id).stock_level > 0 %>
-                    <%= link_to 'Item already in cart', {}, class: 'btn btn-default', disabled: 'disabled' %>
+                  <% if Product.find(product.id).stock_level > 0 %>
+                    <%= form_for :cart_item, :url => '/addtocart', html: { class: 'form-inline' }, method: :post, remote: true do |f| %>
+                      <div class="amount-container">
+                        <%= f.label(:amount, class: "sr-only") %>
+                        <%= f.number_field :amount, {value: 1, class: 'form-control amount-input', min: 1, max: Product.find(product.id).stock_level} %>
+                        <%= f.hidden_field :product, value: product.id, class: 'form-control' %>
+                      </div>
+                      <%= f.submit 'Add to Cart', class: 'btn btn-primary pull-right' %>
+                    <% end %>
                   <% else %>
-                    <%= link_to 'Item out of stock', {}, class: 'btn btn-default', disabled: 'disabled' %>
+                    <%= link_to 'Item out of stock', {}, class: 'btn btn-default pull-right', disabled: 'disabled' %>
                   <% end %>
                 <% else %>
-                  <%= link_to 'Please sign in to buy this item', '/users/sign_in', class: 'btn btn-default' %>
+                  <%= link_to 'Please sign in to buy this item', '/users/sign_in', class: 'btn btn-default pull-right' %>
                 <% end %>
               </div>
             </div>

@@ -184,4 +184,22 @@ $(document).ready(function() {
     queryParams[2] != null ? document.getElementById("lprice").value = queryParams[2] : '';
     queryParams[3] != null ? document.getElementById("hprice").value = queryParams[3] : '';
     queryParams[4] != null ? document.getElementById("search").value = queryParams[4] : '';
+
+    /* custom error message for amount selection of products */
+    inputs = document.getElementsByClassName('amount-input');
+    for(var i = 0; i < inputs.length; i++) {
+        (function(index) {
+            inputs[index].addEventListener('invalid', function(e) {
+                if(inputs[index].validity.rangeOverflow) {
+                    e.target.setCustomValidity('We only have ' + inputs[index].max + ' items of this product in stock.');
+                }
+            }, false);
+            inputs[index].addEventListener('input', function(e){
+                e.target.setCustomValidity('');
+            });
+        })(i);
+    }
+
+
+
 });
