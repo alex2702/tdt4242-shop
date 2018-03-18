@@ -15,27 +15,23 @@
 
         <div class="margin-top-small">
           <h4>Filter by brand</h4>
-          <% counter = 0 %>
           <% @all_brands.each do |brand| %>
             <div class="checkbox">
               <label>
-                <input id="b<%= counter %>" type="checkbox" onclick="checkboxClick(this, 'brand')"> <%= brand %>
+                <input id="<%= brand.gsub(' ', '+') %>" type="checkbox" onclick="checkboxClick(this, 'brand')"> <%= brand %>
               </label>
             </div>
-            <% counter += 1 %>
           <% end %>
         </div>
 
         <div class="margin-top-small">
           <h4>Filter by material</h4>
-          <% counter = 0 %>
           <% @all_materials.each do |material| %>
             <div class="checkbox">
               <label>
-                <input id="m<%= counter %>" type="checkbox" onclick="checkboxClick(this, 'material')"> <%= material %>
+                <input id="<%= material.gsub(' ', '+') %>" type="checkbox" onclick="checkboxClick(this, 'material')"> <%= material %>
               </label>
             </div>
-            <% counter += 1 %>
           <% end %>
         </div>
 

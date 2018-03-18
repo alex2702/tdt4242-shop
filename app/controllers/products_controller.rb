@@ -4,51 +4,36 @@ class ProductsController < ApplicationController
   # GET /products
   def index
     authorize Product
-    all_products = Product.all
 
-    # create two arrays with all the unique brand and material names that are used by the template products/index.html.erb to create html checkboxes
-    # the lists are also used by this function to filter products based on query params in the URL
     @all_brands = Product.distinct.pluck(:brand)
     @all_materials = Product.distinct.pluck(:material)
 
     # create a list of all the products to be displayed by the in html file, after filtering it based on the query params in the URL
     # params are filtered after "(brandX OR brandY) AND (materialA OR materialB) AND lprice AND hprice" logic
-    @products = Array.new
-    all_products.each do |product|
-      add = true
-      if params[:brand] != nil
-        add = false
-        brand_filter = paramsToList(params[:brand])
-        brand_filter.each do |brandNum|
-          if product.brand == @all_brands[brandNum]
-            add = true
-            break
-          end
-        end
-      end
-      if params[:material] != nil && add
-        add = false
-        material_filter = paramsToList(params[:material])
-        material_filter.each do |matNum|
-          if product.material == @all_materials[matNum]
-            add = true
-            break
-          end
-        end
-      end
-      if params[:lprice] != nil && priceStringToInt(params[:lprice]) != nil && priceStringToInt(params[:lprice]) > product.price
-        add = false
-      end 
-      if params[:hprice] != nil && priceStringToInt(params[:lprice]) != nil && priceStringToInt(params[:hprice]) < product.price
-        add = false
-      end
-      if params[:search] != nil && notMatchingSearchTerm(params[:search], product)
-        add = false
-      end
-      if add
-        @products.insert(-1, product)
-      end
+    
+    @products = Product.all
+    
+    if params[:brand] != nil
+      @products = @products.where(brand: params[:brand].split('_'))
     end
+    if params[:material] != nil
+      @products = @products.where(material: params[:material].split('_'))
+    end
+    if priceStringToInt(params[:lprice]) != nil
+      @products = @products.where("price >= ?", priceStringToInt(params[:lprice]))
+    end
+    if priceStringToInt(params[:hprice]) != nil
+      @products = @products.where("price <= ?", priceStringToInt(params[:hprice]))
+    end
+    #This might be vulnerable to SQL injection, might need to use sanitize_sql_like
+    if params[:search] != nil
+      @products = @products.where("name LIKE ? or description LIKE ?", "%"+params[:search]+"%", "%"+params[:search]+"%")
+    end
+  
+    
+    
+    
+    
   end
 
   # GET /products/manage
@@ -124,18 +109,6 @@ class ProductsController < ApplicationController
   # Only allow the whitelisted parameters.
   def product_params
     params.require(:product).permit(:name, :description, :stock_level, :price, :brand, :material, :weight)
-  end
-  
-  def paramsToList(param_string)
-    paramIntList = Array.new
-    paramStringList = param_string.split('_')
-    paramStringList.each do |ps|
-      paramInt = priceStringToInt(ps[1..-1])
-      if paramInt != nil
-        paramIntList.insert(-1, paramInt)
-      end
-    end
-    paramIntList
   end
   
   def priceStringToInt(param_string)
