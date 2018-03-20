@@ -1,21 +1,46 @@
-<h1>Thank you for your order!</h1>
+<h1 class="header-with-button">
+<% if @order.user_id == current_user.id %>
+  Your Order #<%= @order.id %>
+<% else %>
+  Details of Order #<%= @order.id %>
+<% end %>
+    <span class="label label-primary label-medium"><%= @order.status %></span>
+</h1>
+<% if current_user.present? and current_user.role != 'customer' %>
+  <%= link_to 'Update Status', new_message_path(order: @order.id), class: 'btn btn-default pull-right pull-reset-xs header-button' %>
+  <%= link_to 'Updates & Messages', messages_path(order: @order.id), class: 'btn btn-default pull-right pull-reset-xs header-button' %>
+<% end %>
 
 <div class="panel panel-default">
-  <div class="panel-body">
-    <p>The total amount for <%= pluralize(@order.order_items.count, "item") %> is <%= number_to_currency(@order.total_amount) %>.</p>
-    <p>
-    <h3>Payment Data</h3>
-    <dl class="dl-horizontal">
-      <dt>Credit Card Type</dt>
-      <dd><%= @order.credit_card_type %></dd>
-      <dt>Name on Credit Card</dt>
-      <dd><%= @order.credit_card_name %></dd>
-      <dt>Credit Card Number</dt>
-      <dd><%= @order.credit_card_number %></dd>
-      <dt>Credit Card Expiry</dt>
-      <dd><%= @order.credit_card_expiry %></dd>
-    </dl>
-    </p>
+  <div class="panel-body row order-details">
+    <div class="col-xs-12 col-md-6">
+      <h3>Order Details</h3>
+      <dl class="dl-horizontal">
+        <dt>Order Number</dt>
+        <dd>#<%= @order.id %></dd>
+        <dt>Order Received at</dt>
+        <dd><%= @order.created_at.strftime("%d.%m.%Y %H:%M") %></dd>
+        <dt>Number of Items</dt>
+        <dd>The order includes <%= pluralize(@order.order_items.count, "item") %>.</dd>
+        <dt>Total Amount</dt>
+        <dd><%= number_to_currency(@order.total_amount) %></dd>
+        <dt>Order Status</dt>
+        <dd><%= @order.status %></dd>
+      </dl>
+    </div>
+    <div class="col-xs-12 col-md-6">
+      <h3>Payment Data</h3>
+      <dl class="dl-horizontal">
+        <dt>Credit Card Type</dt>
+        <dd><%= @order.credit_card_type %></dd>
+        <dt>Name on Credit Card</dt>
+        <dd><%= @order.credit_card_name %></dd>
+        <dt>Credit Card Number</dt>
+        <dd><%= @order.credit_card_number %></dd>
+        <dt>Credit Card Expiry</dt>
+        <dd><%= @order.credit_card_expiry.strftime("%m/%Y") %></dd>
+      </dl>
+    </div>
   </div>
 
   <div class="table-responsive">

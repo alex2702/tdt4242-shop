@@ -19,6 +19,7 @@ class OrderDashboard < Administrate::BaseDashboard
     credit_card_name: Field::String,
     credit_card_type: Field::String,
     total_amount: Field::Number.with_options(decimals: 2),
+    status: Field::String,
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -47,6 +48,7 @@ class OrderDashboard < Administrate::BaseDashboard
     :credit_card_name,
     :credit_card_type,
     :total_amount,
+    :status,
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -61,6 +63,7 @@ class OrderDashboard < Administrate::BaseDashboard
     :credit_card_name,
     :credit_card_type,
     :total_amount,
+    :status,
   ].freeze
 
   # Overwrite this method to customize how orders are displayed

@@ -108,6 +108,21 @@ class ProductsController < ApplicationController
     end
   end
 
+  def update_stock
+    authorize Product
+    @product = Product.find(params[:product][:id])
+    respond_to do |format|
+      if @product.update(product_params)
+        format.html { redirect_to manage_products_path, notice: "The stock level of #{@product.name} was successfully updated." }
+        format.json { render :manage, status: :ok, location: @product }
+      else
+        format.html { render :manage }
+        format.json { render json: @product.errors, status: :unprocessable_entity }
+        format.js
+      end
+    end
+  end
+
   # DELETE /products/1
   def destroy
     authorize Product

@@ -1,0 +1,1 @@
+$("#product_<%= @product.id %>").html("<%= escape_javascript(render partial: '_edit_stock_levels', locals: {product: @product}).html_safe %>");

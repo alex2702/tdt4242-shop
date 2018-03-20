@@ -39,6 +39,10 @@ main {
   margin-top: 3rem;
 }
 
+.margin-top-xsmall {
+  margin-top: 1rem;
+}
+
 .margin-top-medium {
   margin-top: 5rem;
 }
@@ -132,8 +136,9 @@ form.multi-col-form {
 @media (max-width: 767px) {
   .pull-reset-xs {
     float: none !important;
-    margin-left: 0;
+    margin-left: 0 !important;
     margin-bottom: 15px;
+    display: block;
   }
 
   .text-right-xs {
@@ -157,6 +162,25 @@ form.multi-col-form {
     text-align: left;
     a {
       margin-top: 2rem;
+    }
+  }
+}
+
+.label-medium {
+  font-size: 0.5em;
+  vertical-align: middle;
+}
+.label-large {
+  font-size: 1em;
+  vertical-align: middle;
+}
+.panel-header-button {
+  margin-left: 10px;
+}
+table.table {
+  thead, tbody, tfoot {
+    th, td {
+      vertical-align: middle;
     }
   }
 }

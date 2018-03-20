@@ -1,0 +1,30 @@
+<h1 class="header-with-button">Message History for Order #<%= @order.id %> <span class="label label-primary label-medium"><%= @order.status %></span></h1>
+<%= link_to 'Update Status', new_message_path(order: @order.id), class: 'btn btn-default pull-right pull-reset-xs header-button' %>
+
+<div class="panel panel-default">
+  <div class="table-responsive">
+    <table class="table table-striped margin-bottom-large">
+      <thead>
+      <tr>
+        <th>Date Sent</th>
+        <th>Subject & Body</th>
+        <th>New Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @messages.created_at_desc.each do |message| %>
+        <tr>
+          <td><%= message.created_at.strftime("%d.%m.%Y %H:%M") %></td>
+          <td><strong><%= message.subject %></strong><br /><%= message.body %></td>
+          <td><%= message.new_status %></td>
+        </tr>
+      <% end %>
+        <tr>
+          <td><%= @order.created_at.strftime("%d.%m.%Y %H:%M") %></td>
+          <td><strong>New Order</strong><br />Your order has been registered.</td>
+          <td>Order Received</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

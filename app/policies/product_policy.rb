@@ -34,6 +34,10 @@ class ProductPolicy
     @current_user.present? and (@current_user.admin? or @current_user.seller?)
   end
 
+  def update_stock?
+    @current_user.present? and (@current_user.admin? or @current_user.seller?)
+  end
+
   def destroy?
     @current_user.present? and (@current_user.admin? or @current_user.seller?)
   end

@@ -1,0 +1,29 @@
+<%= form_for @message, :remote => true, :html => {class: ['form-horizontal', 'row']} do |f| %>
+  <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+    <!-- Messages to be filled in depending on choice of Status -->
+    <%= hidden_field :subject, :order_confirmed, value: "Your order was confirmed" %>
+    <%= hidden_field :body, :order_confirmed, value: "We're happy to inform you that we hereby confirm your order. You will shortly receive further status updates." %>
+    <%= hidden_field :subject, :payment_received, value: "Your payment was received" %>
+    <%= hidden_field :body, :payment_received, value: "We have received your payment and will ship your order as soon as possible." %>
+    <%= hidden_field :subject, :order_shipped, value: "Your order was shipped" %>
+    <%= hidden_field :body, :order_shipped, value: "Your order is now on its way." %>
+    <div class="form-group">
+      <div><%= label_tag(:status, 'Status', class: "control-label") %></div>
+      <%= select_tag(:status_select, options_for_select([['Order Confirmed'], ['Payment Received'], ['Order Shipped'], ['Other', 'other']]), { :include_blank => true, required: true, class: 'form-control' }) %>
+      <%= text_field_tag(:status_text, nil, required: true, placeholder: 'Please specify', class: 'form-control hidden margin-top-xsmall') %>
+      <%= f.hidden_field :new_status %>
+    </div>
+    <div class="form-group">
+      <div><%= f.label(:subject, class: "control-label") %></div>
+      <%= f.text_field :subject, required: true, class: 'form-control', disabled: 'disabled' %>
+    </div>
+    <div class="form-group">
+      <div><%= f.label(:body, class: "control-label") %></div>
+      <%= f.text_area :body, required: true, class: 'form-control', disabled: 'disabled', rows: 5, data: {content: 'here'} %>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+    <%= f.hidden_field :order_id, value: params[:order] %>
+    <%= f.submit(class: "btn btn-primary pull-right margin-top-small") %>
+  </div>
+<% end %>

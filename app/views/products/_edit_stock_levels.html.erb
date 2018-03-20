@@ -1,0 +1,7 @@
+<nobr>
+  <%= form_for product, url: { action: "update_stock" }, :remote => true, :html => {class: 'form-inline'} do |f| %>
+    <%= f.number_field(:stock_level, in: 0..100000, step: 1, value: product.stock_level, class: "form-control form-field-small amount-input") %>
+    <%= f.hidden_field(:id, {value: product.id}) %>
+    <%= f.submit('Save', class: 'btn btn-default btn-sm') %>
+  <% end %>
+</nobr>

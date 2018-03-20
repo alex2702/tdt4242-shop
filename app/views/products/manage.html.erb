@@ -17,13 +17,8 @@
         <tr>
           <td><strong><%= product.name %></strong><br /><%= product.description %></td>
           <td class="text-right"><%= number_to_currency(product.price) %></td>
-          <td class="text-right">
-            <nobr>
-              <%= form_for product, :remote => true, :html => {class: 'form-inline'} do |f| %>
-                <%= f.number_field(:stock_level, in: 0..100000, step: 1, class: "form-control form-field-small", disabled: true) %>
-                <%= f.submit('Save', disabled: true) %>
-              <% end %>
-            </nobr>
+          <td class="text-right" id="product_<%= product.id %>">
+            <%= render partial: 'products/edit_stock_levels', locals: {product: product} %>
           </td>
           <td class="text-right">
             <nobr>

@@ -9,11 +9,13 @@ Rails.application.routes.draw do
     resources :order_items
     resources :deals
     resources :product_items
+    resources :messages
     root to: "users#index"
   end
 
   resources :products do
     get :manage, on: :collection, as: :manage
+    patch :update_stock, on: :collection, as: :update_stock
   end
   root to: 'products#index'
   devise_for :users
@@ -28,4 +30,5 @@ Rails.application.routes.draw do
   end
   resources :order_items
   resources :deals
+  resources :messages
 end

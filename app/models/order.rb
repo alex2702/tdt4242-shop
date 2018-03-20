@@ -1,5 +1,6 @@
 class Order < ApplicationRecord
   has_many :order_items
+  has_many :messages
   accepts_nested_attributes_for :order_items
   belongs_to :user
   validates :total_amount, presence: true, numericality: { greater_than: 0 }
