@@ -1,10 +1,12 @@
 class OrderItemsController < ApplicationController
   def new
+    authorize OrderItem
     @order_item = OrderItem.new
   end
 
   def create
     @order_item = OrderItem.new(order_item_params)
+    authorize @order_item
   end
 
   private

@@ -7,8 +7,8 @@
     <span class="label label-primary label-medium"><%= @order.status %></span>
 </h1>
 <% if current_user.present? and current_user.role != 'customer' %>
-  <%= link_to 'Update Status', new_message_path(order: @order.id), class: 'btn btn-default pull-right pull-reset-xs header-button' %>
-  <%= link_to 'Updates & Messages', messages_path(order: @order.id), class: 'btn btn-default pull-right pull-reset-xs header-button' %>
+  <%= link_to 'Update Status', new_message_path(order: @order.id), class: 'btn btn-default pull-right pull-reset-xs pull-reset-sm header-button' %>
+  <%= link_to 'Updates & Messages', messages_path(order: @order.id), class: 'btn btn-default pull-right pull-reset-xs pull-reset-sm header-button' %>
 <% end %>
 
 <div class="panel panel-default">

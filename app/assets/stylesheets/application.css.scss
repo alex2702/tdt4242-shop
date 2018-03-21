@@ -14,6 +14,7 @@
  *= require_self
  */
 
+
 html {
   padding-left: calc(100vw - 100%);
   background-color: #eee;
@@ -158,6 +159,13 @@ form.multi-col-form {
 }
 
 @media (max-width: 991px) {
+  .pull-reset-sm {
+    float: none !important;
+    margin-left: 0 !important;
+    margin-bottom: 15px;
+    display: block;
+  }
+
   .text-right-sm {
     text-align: left;
     a {

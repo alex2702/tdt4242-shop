@@ -1,3 +1,6 @@
+// make menu overflow from 992px on
+$grid-float-breakpoint: 992px;
+
 // import the CSS framework
 @import "bootstrap-sprockets";
 @import "bootstrap";

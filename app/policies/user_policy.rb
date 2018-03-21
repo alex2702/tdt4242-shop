@@ -1,4 +1,4 @@
-class UserPolicy
+class UserPolicy < ApplicationPolicy
   attr_reader :current_user, :model
 
   def initialize(current_user, model)
@@ -15,7 +15,7 @@ class UserPolicy
   end
 
   def update?
-    @current_user.admin?
+    @current_user.admin? or @current_user == @user
   end
 
   def destroy?
@@ -23,4 +23,7 @@ class UserPolicy
     @current_user.admin?
   end
 
+  def new?
+    false
+  end
 end

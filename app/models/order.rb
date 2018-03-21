@@ -3,6 +3,7 @@ class Order < ApplicationRecord
   has_many :messages
   accepts_nested_attributes_for :order_items
   belongs_to :user
+  scope :created_at_desc, -> { order(created_at: :desc) }
   validates :total_amount, presence: true, numericality: { greater_than: 0 }
   # validate cc number as 8 to 19 digits (according to IIN standard)
   validates :credit_card_number, presence: true, length: { minimum: 8, maximum: 19 }, numericality: true

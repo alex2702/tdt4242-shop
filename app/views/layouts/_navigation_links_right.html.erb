@@ -1,0 +1,10 @@
+<%# add navigation links to this file %>
+<% if user_signed_in? %>
+  <li>
+    <%= link_to '/cart' do %>
+      My Cart
+      <%= content_tag(:span, current_user.cart.cart_items.length, :class => "badge") %>
+    <% end %>
+  </li>
+  <li><%= link_to 'My Orders', orders_path %></li>
+<% end %>

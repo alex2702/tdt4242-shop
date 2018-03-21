@@ -29,6 +29,7 @@ class MessagesController < ApplicationController
           format.json { render :index, status: :created, location: @message }
         end
       rescue ActiveRecord::ActiveRecordError => e
+        logger.debug e
         format.html { render :new }
         format.json { render json: @message.errors, status: :unprocessable_entity }
         format.js   { render :new, content_type: 'text/javascript' }

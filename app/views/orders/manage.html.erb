@@ -3,7 +3,7 @@
 <h1>Manage Orders</h1>
 
 <% if @orders.length > 0 %>
-  <% @orders.each do |order| %>
+  <% @orders.created_at_desc.each do |order| %>
     <div class="panel panel-default">
       <div class="panel-heading" style="overflow: auto;">
         <span class="order-title">Order from <%= order.user.name %> on <%= order.created_at.strftime("%d.%m.%Y %H:%M") %></span>

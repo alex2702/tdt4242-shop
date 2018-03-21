@@ -1,20 +1,17 @@
 class CartsController < ApplicationController
   def new
-    authorize Cart
     @cart = Cart.new
-  end
-
-  def index
-    authorize Cart
+    authorize @cart
   end
 
   def create
-    authorize Cart
     # create a new cart
     @cart = Cart.new
 
     # add the user's ID to the new cart
     @cart.user_id = params['user_id']
+
+    authorize @cart
 
     respond_to do |format|
       if @cart.save
@@ -28,10 +25,12 @@ class CartsController < ApplicationController
   end
 
   def show
-    authorize Cart
     @cart = Cart.find_by(user_id: current_user.id)
+    authorize @cart
     @total_amount, @total_discount, @discounts = calculate_total_amount
   end
+
+  private
 
   def calculate_total_amount
     # retrieve base data

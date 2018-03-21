@@ -1,18 +1,17 @@
 class OrdersController < ApplicationController
   def new
-    authorize Order
     @order = Order.new
+    authorize @order
   end
 
   def checkout
-    authorize Order
     @order = Order.new
     @cart = Cart.find_by(user_id: current_user.id)
+    authorize @cart
     @total_amount, @total_discount, @discounts = calculate_total_amount
   end
 
   def create
-    authorize Order
     @order = Order.new
     # we have to explicitly read and save every parameter because the expiry month/year are coming in as
     # separate parameters but should be unified in one field before saving to the database
@@ -58,6 +57,8 @@ class OrdersController < ApplicationController
       cart_item.product.stock_level -= 1
       cart_item.product.save!
     end
+
+    authorize @order
 
     respond_to do |format|
       if @order.save and @cart_item.nil?
@@ -112,8 +113,8 @@ class OrdersController < ApplicationController
   end
 
   def show
-    authorize Order
     @order = Order.find(params[:id])
+    authorize @order
     @total_amount, @total_discount, @discounts = calculate_total_order_amount(params[:id])
   end
 

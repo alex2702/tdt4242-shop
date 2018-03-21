@@ -1,11 +1,13 @@
 class CartItemsController < ApplicationController
   def new
+    authorize CartItem
     @cart_item = CartItem.new
   end
 
   # DELETE /cart_item/1
   def destroy
     @cart_item = CartItem.find(params[:id])
+    authorize @cart_item
     @cart_item.destroy
     respond_to do |format|
       format.html { redirect_to '/cart', notice: 'The item was successfully removed.' }
@@ -15,6 +17,7 @@ class CartItemsController < ApplicationController
 
   def add_to_cart
     @cart = current_user.cart
+    authorize @cart
 
     if @cart.cart_items.where(product_id: params[:cart_item][:product]).count.positive?
       @cart_item = @cart.cart_items.where(product_id: params[:cart_item][:product]).first
@@ -37,8 +40,8 @@ class CartItemsController < ApplicationController
 
   # PATCH/PUT /cart_items/1
   def update
-    #authorize CartItem TODO
     @cart_item = CartItem.find(params[:id])
+    authorize @cart_item
     respond_to do |format|
       if @cart_item.update(cart_item_params)
         format.html { redirect_to '/cart', notice: "The amount of #{@cart_item.product.name.pluralize(@cart_item.amount)} was successfully updated." }
