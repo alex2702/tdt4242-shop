@@ -11,7 +11,7 @@ class OrderPolicy < ApplicationPolicy
   end
 
   def create?
-    @current_user.present? and (@current_user.id == @order.user_id or @current_user.admin?) and @order.order_items.count > 0
+    @current_user.present? and (@current_user.id == @order.user_id or @current_user.admin?)
   end
 
   def index?
