@@ -1,3 +1,5 @@
+<% content_for :title do %><%= @product.name %><% end %>
+
 <h1 id="page-title" class="header-with-button"><%= @product.name %></h1>
 <% if current_user.present? and current_user.role != 'customer' %>
   <%= link_to 'Edit this Product', edit_product_path(@product), class: 'btn btn-default pull-right pull-reset-xs header-button' %>

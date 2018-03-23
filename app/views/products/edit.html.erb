@@ -1,3 +1,4 @@
+<% content_for :title do %>Edit <%= @product.name %><% end %>
 <h1 class="header-with-button">Edit <%= @product.name %></h1>
 <%= link_to 'View Product', @product, class: 'btn btn-default pull-right pull-reset-xs header-button' %>
 <%= link_to 'View Product List', manage_products_path, class: 'btn btn-default pull-right pull-reset-xs header-button' %>

@@ -55,12 +55,12 @@ class OrdersController < ApplicationController
             cart_item.update!(order_id: @order.id, cart_id: nil)
             cart_item.product.stock_level -= cart_item.amount
             cart_item.product.save!
-            StatusMailer.status_update(@order.user_id, @order.id, "We have received your order", "Your order was received. Please note that this is not an order confirmation. You will receive a confirmation shortly.").deliver
-            # final save so all validations are run
-            @order.save!
-            format.html { redirect_to @order, notice: 'Your order has been placed.' }
-            format.json { render json: @order, status: :created, location: @order }
           end
+          StatusMailer.status_update(@order.user_id, @order.id, "We have received your order", "Your order was received. Please note that this is not an order confirmation. You will receive a confirmation shortly.").deliver
+          # final save so all validations are run
+          @order.save!
+          format.html { redirect_to @order, notice: 'Your order has been placed.' }
+          format.json { render json: @order, status: :created, location: @order }
         rescue ActiveRecord::ActiveRecordError => e
           format.html { render :checkout }
           format.json { render json: @order.errors, status: :unprocessable_entity }

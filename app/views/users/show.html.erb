@@ -1,3 +1,5 @@
+<% content_for :title do %><%= @user.name if @user.name %><% end %>
+
 <h1 class="header-with-button"><%= @user.name if @user.name %></h1>
 <%= link_to 'Back to List', users_path, class: 'btn btn-default pull-right pull-reset-xs header-button' %>
 

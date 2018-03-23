@@ -1,5 +1,7 @@
 <h1 class="header-with-button">Message History for Order #<%= @order.id %> <span class="label label-primary label-medium"><%= @order.status %></span></h1>
-<%= link_to 'Update Status', new_message_path(order: @order.id), class: 'btn btn-default pull-right pull-reset-xs pull-reset-sm header-button' %>
+<% if current_user.seller? or current_user.admin? %>
+  <%= link_to 'Update Status', new_message_path(order: @order.id), class: 'btn btn-default pull-right pull-reset-xs pull-reset-sm header-button' %>
+<% end %>
 
 <div class="panel panel-default">
   <div class="table-responsive">

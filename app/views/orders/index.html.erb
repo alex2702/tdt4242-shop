@@ -1,98 +1,43 @@
+<% content_for :title do %>Your Orders<% end %>
+
 <p id="notice"><%= notice %></p>
 
 <h1>Your Orders</h1>
 
 <% if @orders.length > 0 %>
-  <% @orders.created_at_desc.each do |order| %>
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        Your order from <%= order.created_at.strftime("%d.%m.%Y %H:%M") %>
-        <span class="label label-primary label-large pull-right"><%= order.status %></span>
-      </div>
-      <div class="panel-body row order-details">
-        <div class="col-xs-12 col-md-6">
-          <h3>Order Details</h3>
-          <dl class="dl-horizontal">
-            <dt>Order Number</dt>
-            <dd>#<%= order.id %></dd>
-            <dt>Order Received at</dt>
-            <dd><%= order.created_at.strftime("%d.%m.%Y %H:%M") %></dd>
-            <dt>Number of Items</dt>
-            <dd>The order includes <%= pluralize(order.order_items.count, "item") %>.</dd>
-            <dt>Total Amount</dt>
-            <dd><%= number_to_currency(order.total_amount) %></dd>
-            <dt>Order Status</dt>
-            <dd><%= order.status %></dd>
-          </dl>
-        </div>
-        <div class="col-xs-12 col-md-6">
-          <h3>Payment Data</h3>
-          <dl class="dl-horizontal">
-            <dt>Credit Card Type</dt>
-            <dd><%= order.credit_card_type %></dd>
-            <dt>Name on Credit Card</dt>
-            <dd><%= order.credit_card_name %></dd>
-            <dt>Credit Card Number</dt>
-            <dd><%= order.credit_card_number %></dd>
-            <dt>Credit Card Expiry</dt>
-            <dd><%= order.credit_card_expiry.strftime("%m/%Y") %></dd>
-          </dl>
-        </div>
-      </div>
+  <div class="panel panel-default">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>#</th>
+          <th>Order Time</th>
+          <th>Status</th>
+          <th class="text-right">Amount</th>
+          <th class="text-right">Actions</th>
+        </tr>
+        </thead>
 
-      <div class="table-responsive">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th class="text-right">Amount</th>
-              <th class="text-right">Price per Piece</th>
-              <th class="text-right">Price</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <% order.order_items.each do |order_item| %>
-              <tr>
-                <td><%= order_item.product.name %></td>
-                <td class="text-right"><%= order_item.amount %></td>
-                <td class="text-right"><%= number_to_currency(order_item.product.price) %></td>
-                <td class="text-right"><%= number_to_currency(order_item.amount * order_item.product.price) %></td>
-              </tr>
-            <% end %>
-          </tbody>
-
-          <tfoot>
-            <tr>
-              <td colspan="3"><strong>Total<%= @order_details[order.id][:discounts].length > 0 ? " before discounts" : "" %></strong></td>
-              <td class="text-right"><strong><%= number_to_currency(@order_details[order.id][:total_amount]) %></strong></td>
-            </tr>
-            <% if @order_details[order.id][:discounts].length > 0 %>
-              <tr><td colspan="5"><strong>Discounts</strong></td></tr>
-              <% @order_details[order.id][:discounts].each do |disc| %>
-                <% deal = Deal.find(disc[:deal_id]) %>
-                <tr class="no-border-top">
-                  <% if deal.type == 'VolumeDeal' %>
-                    <td colspan="3"><%= "#{disc[:deal_multiplier]}x #{deal.deal_print}" %></td>
-                    <td class="text-right"><%= number_to_currency((deal.deal_amount - deal.trigger_amount) * deal.product.price * -1)  %></td>
-                  <% else %>
-                    <td colspan="3"><%= deal.deal_print %></td>
-                    <td class="text-right"><%= number_to_currency(deal.discount_percentage * deal.product.price * disc[:deal_multiplier] * -1) %></td>
-                  <% end %>
-                </tr>
+        <tbody>
+        <% @orders.created_at_desc.each do |order| %>
+          <tr>
+            <td>#<%= order.id %></td>
+            <td><%= order.created_at.strftime("%d.%m.%Y %H:%M") %></td>
+            <td><span class="label label-primary"><%= order.status %></span></td>
+            <td class="text-right"><%= number_to_currency(order.total_amount) %></td>
+            <td class="text-right">
+              <%= link_to 'Details', order_path(order), class: 'btn btn-default btn-sm' %>
+              <%= link_to 'View Updates & Messages', messages_path(order: order.id), class: 'btn btn-default btn-sm' %>
+              <% if current_user.seller? or current_user.admin? %>
+                <%= link_to 'Update Status', new_message_path(order: order.id), class: 'btn btn-default btn-sm' %>
               <% end %>
-              <tr>
-                <td colspan="3"><strong>Total after discounts</strong></td>
-                <td class="text-right"><strong><%= number_to_currency(@order_details[order.id][:total_amount] - @order_details[order.id][:total_discount]) %></strong></td>
-              </tr>
-            <% end %>
-          </tfoot>
-        </table>
-      </div>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
     </div>
-  <% end %>
+  </div>
 <% else %>
   <h2 class="text-muted text-center margin-top-large">You have not yet made any orders.</h2>
 <% end %>
-
-<!-- TODO calculate deals and show the discounted price -->

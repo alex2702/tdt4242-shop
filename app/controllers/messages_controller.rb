@@ -1,8 +1,9 @@
 class MessagesController < ApplicationController
   # GET /messages
   def index
-    authorize Message
+    #authorize Message
     @order = Order.find(params[:order])
+    authorize @order, :show?
     @messages = @order.messages
   end
 
