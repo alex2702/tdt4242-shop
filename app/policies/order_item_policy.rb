@@ -14,4 +14,18 @@ class OrderItemPolicy < ApplicationPolicy
     #@current_user.present? and @current_user.admin?
     @current_user.present? and (@current_user.id == Order.find(@cart_item.cart_id).user_id or @current_user.admin?)
   end
+
+  # only for dashboard
+
+  def show?
+    @current_user.present? and @current_user.admin?
+  end
+
+  def edit?
+    @current_user.present? and @current_user.admin?
+  end
+
+  def destroy?
+    @current_user.present? and @current_user.admin?
+  end
 end

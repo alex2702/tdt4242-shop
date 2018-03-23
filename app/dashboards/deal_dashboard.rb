@@ -8,15 +8,15 @@ class DealDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    product: Field::HasOne,
+    product: Field::BelongsTo,
     id: Field::Number,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
-    product_id: Field::Number,
-    deal_type: Field::String.with_options(searchable: false),
+    deal_type: Field::Number,
     trigger_amount: Field::Number,
     deal_amount: Field::Number,
     discount_percentage: Field::Number.with_options(decimals: 2),
+    type: Field::String,
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -38,11 +38,11 @@ class DealDashboard < Administrate::BaseDashboard
     :id,
     :created_at,
     :updated_at,
-    :product_id,
     :deal_type,
     :trigger_amount,
     :deal_amount,
     :discount_percentage,
+    :type,
   ].freeze
 
   # FORM_ATTRIBUTES
@@ -50,11 +50,11 @@ class DealDashboard < Administrate::BaseDashboard
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = [
     :product,
-    :product_id,
     :deal_type,
     :trigger_amount,
     :deal_amount,
     :discount_percentage,
+    :type,
   ].freeze
 
   # Overwrite this method to customize how deals are displayed

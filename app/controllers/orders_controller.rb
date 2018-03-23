@@ -1,4 +1,6 @@
 class OrdersController < ApplicationController
+  include ProductItemsHelper
+
   def new
     authorize Order
     @order = Order.new
@@ -8,19 +10,19 @@ class OrdersController < ApplicationController
     @order = Order.new
     @cart = Cart.find_by(user_id: current_user.id)
     authorize @cart
-    @total_amount, @total_discount, @discounts = calculate_total_amount
+    @total_amount, @total_discount, @discounts = calculate_total_amount(@cart.cart_items)
   end
 
   def create
     # create new order object from form parameters
     @order = Order.new(order_params)
 
-    # for security reasons, calculate the total amount from the actual cart (instead of taking a parameter)
-    @total_amount, @total_discount, @discounts = calculate_total_amount
-    @order.total_amount = @total_amount
-
     # get the contents of the cart
     @cart = Cart.find(current_user.cart_id)
+
+    # for security reasons, calculate the total amount from the actual cart (instead of taking a parameter)
+    @total_amount, @total_discount, @discounts = calculate_total_amount(@cart.cart_items)
+    @order.total_amount = @total_amount
 
     authorize @order
 
@@ -75,7 +77,7 @@ class OrdersController < ApplicationController
     @orders = Order.where(user_id: current_user.id)
     @order_details = Array.new
     @orders.each do |order|
-      @total_amount, @total_discount, @discounts = calculate_total_order_amount(order.id)
+      @total_amount, @total_discount, @discounts = calculate_total_amount(order.order_items)
       @order_details[order.id] = {
           total_amount: @total_amount,
           total_discount: @total_discount,
@@ -89,7 +91,7 @@ class OrdersController < ApplicationController
     @orders = Order.all
     @order_details = Array.new
     @orders.each do |order|
-      @total_amount, @total_discount, @discounts = calculate_total_order_amount(order.id)
+      @total_amount, @total_discount, @discounts = calculate_total_amount(order.order_items)
       @order_details[order.id] = {
           total_amount: @total_amount,
           total_discount: @total_discount,
@@ -101,7 +103,7 @@ class OrdersController < ApplicationController
   def show
     @order = Order.find(params[:id])
     authorize @order
-    @total_amount, @total_discount, @discounts = calculate_total_order_amount(params[:id])
+    @total_amount, @total_discount, @discounts = calculate_total_amount(@order.order_items)
   end
 
   private
@@ -112,110 +114,5 @@ class OrdersController < ApplicationController
                                   :credit_card_expiry, :credit_card_expiry_month, :credit_card_expiry_year,
                                   :credit_card_cvc
     )
-  end
-
-  def calculate_total_amount
-    # retrieve base data
-    cart = Cart.find_by(user_id: current_user.id)
-    deals = Deal.all.includes(:product)
-
-    logger.debug "calculate_total_amount: Found cart with #{cart.cart_items.count} items"
-
-    # return elements
-    total_amount = 0
-    discount_amount = 0
-    discounts = Array.new
-
-    # calculation
-    cart.cart_items.each do |cart_item|
-      # calculate initial total amount (without deals)
-      total_amount += cart_item.amount * cart_item.product.price
-
-      logger.debug "Looking at cart_item. Total amount is #{total_amount}"
-
-      # check all deals for this product
-      deals.each do |deal|
-        if deal.product_id == cart_item.product_id
-          # check for volume-based deals and if trigger amount is reached
-          multiplier = 0
-          if deal.type == 'VolumeDeal'
-            logger.debug "Trigger amount is #{deal.deal_amount} and item amount is #{cart_item.amount}"
-            if deal.trigger_amount.present? and cart_item.amount >= deal.deal_amount
-              logger.debug "Deal is achieved"
-              multiplier = cart_item.amount / deal.deal_amount
-              discount_amount += multiplier * cart_item.product.price
-              discount = {
-                deal_id: deal.id,
-                deal_multiplier: multiplier
-              }
-              discounts.push(discount)
-            end
-          end
-
-          # check for percentage-based deals
-          if deal.type == 'PercentageDeal'
-            discount_amount += (cart_item.amount - multiplier) * cart_item.product.price * deal.discount_percentage
-            discount = {
-              deal_id: deal.id,
-              deal_multiplier: cart_item.amount
-            }
-            discounts.push(discount)
-          end
-        end
-      end
-    end
-    logger.debug "Returning total_amount #{total_amount}, discount_amount #{discount_amount}, discounts #{discounts.inspect}"
-    return total_amount, discount_amount, discounts
-  end
-
-  # This method will eventually disappear when orders and carts share a common parent class
-  def calculate_total_order_amount(order_id)
-    # retrieve base data
-    order = Order.find(order_id)
-    deals = Deal.all.includes(:product)
-
-    # return elements
-    total_amount = 0
-    discount_amount = 0
-    discounts = Array.new
-
-    # calculation
-    order.order_items.each do |order_item|
-      # calculate initial total amount (without deals)
-      total_amount += order_item.amount * order_item.product.price
-
-      # check all deals for this product
-      deals.each do |deal|
-        if deal.product_id == order_item.product_id
-          # check for volume-based deals and if trigger amount is reached
-          multiplier = 0
-          if deal.type == 'VolumeDeal'
-            logger.debug "Trigger amount is #{deal.deal_amount} and item amount is #{order_item.amount}"
-            if deal.trigger_amount.present? and order_item.amount >= deal.deal_amount
-              logger.debug "Deal is achieved"
-              multiplier = order_item.amount / deal.deal_amount
-              discount_amount += multiplier * order_item.product.price
-              discount = {
-                  deal_id: deal.id,
-                  deal_multiplier: multiplier
-              }
-              discounts.push(discount)
-            end
-          end
-
-          # check for percentage-based deals
-          if deal.type == 'PercentageDeal'
-            discount_amount += (order_item.amount - multiplier) * order_item.product.price * deal.discount_percentage
-            discount = {
-                deal_id: deal.id,
-                deal_multiplier: order_item.amount
-            }
-            discounts.push(discount)
-          end
-        end
-      end
-    end
-    logger.debug "Returning total_amount #{total_amount}, discount_amount #{discount_amount}, discounts #{discounts.inspect}"
-    return total_amount, discount_amount, discounts
   end
 end

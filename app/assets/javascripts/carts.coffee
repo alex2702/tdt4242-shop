@@ -14,3 +14,5 @@ $(document).on "turbolinks:load", ->
     ), false
     inputs[index].addEventListener 'input', (e) ->
       e.target.setCustomValidity ''
+
+  $('[data-toggle="tooltip"]').tooltip()

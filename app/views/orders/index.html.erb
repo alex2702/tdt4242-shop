@@ -24,13 +24,10 @@
             <td>#<%= order.id %></td>
             <td><%= order.created_at.strftime("%d.%m.%Y %H:%M") %></td>
             <td><span class="label label-primary"><%= order.status %></span></td>
-            <td class="text-right"><%= number_to_currency(order.total_amount) %></td>
+            <td class="text-right"><%= number_to_currency(@order_details[order.id][:total_amount] - @order_details[order.id][:total_discount]) %></td>
             <td class="text-right">
               <%= link_to 'Details', order_path(order), class: 'btn btn-default btn-sm' %>
               <%= link_to 'View Updates & Messages', messages_path(order: order.id), class: 'btn btn-default btn-sm' %>
-              <% if current_user.seller? or current_user.admin? %>
-                <%= link_to 'Update Status', new_message_path(order: order.id), class: 'btn btn-default btn-sm' %>
-              <% end %>
             </td>
           </tr>
         <% end %>

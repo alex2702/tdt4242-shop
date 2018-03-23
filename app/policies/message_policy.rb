@@ -17,4 +17,18 @@ class MessagePolicy < ApplicationPolicy
   def create?
     @current_user.present? and (@current_user.admin? or @current_user.seller?)
   end
+
+  # only for dashboard
+
+  def show?
+    @current_user.present? and @current_user.admin?
+  end
+
+  def edit?
+    @current_user.present? and @current_user.admin?
+  end
+
+  def destroy?
+    @current_user.present? and @current_user.admin?
+  end
 end

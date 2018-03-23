@@ -15,3 +15,5 @@ $(document).on "turbolinks:load", ->
 
   $("#credit_card_expiry_year").change ->
     set_fields()
+
+  $('[data-toggle="tooltip"]').tooltip()

@@ -25,4 +25,14 @@ class CartPolicy < ApplicationPolicy
   def checkout?
     @current_user.present? and (@current_user.id == @cart.user_id or @current_user.admin?) and @cart.cart_items.count > 0
   end
+
+  # only for dashboard
+
+  def edit?
+    @current_user.present? and @current_user.admin?
+  end
+
+  def destroy?
+    @current_user.present? and @current_user.admin?
+  end
 end

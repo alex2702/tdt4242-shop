@@ -9,4 +9,10 @@ class ProductItemPolicy < ApplicationPolicy
   def new?
     @current_user.present? and @current_user.admin?
   end
+
+  # only for dashboard
+
+  def show?
+    @current_user.present? and @current_user.admin?
+  end
 end

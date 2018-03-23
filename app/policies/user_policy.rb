@@ -26,4 +26,10 @@ class UserPolicy < ApplicationPolicy
   def new?
     false
   end
+
+  # only for dashboard
+
+  def edit?
+    @current_user.present? and @current_user.admin?
+  end
 end

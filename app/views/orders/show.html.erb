@@ -75,16 +75,16 @@
           <td class="text-right"><strong><%= number_to_currency(@total_amount) %></strong></td>
         </tr>
         <% if @discounts.length > 0 %>
-          <tr><td colspan="5"><strong>Discounts</strong></td></tr>
+          <tr><td colspan="5"><strong>Discounts</strong> <span class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="In case there are both percentage- and volume-based deals on a product, we apply the volume deal first. The percentage deal is then applied on the REMAINING amount of items."></span></td></tr>
           <% @discounts.each do |disc| %>
             <% deal = Deal.find(disc[:deal_id]) %>
             <tr class="no-border-top">
               <% if deal.type == 'VolumeDeal' %>
                 <td colspan="3"><%= "#{disc[:deal_multiplier]}x #{deal.deal_print}" %></td>
-                <td class="text-right"><%= number_to_currency((deal.deal_amount - deal.trigger_amount) * deal.product.price * -1)  %></td>
+                <td class="text-right"><%= number_to_currency((deal.deal_amount - deal.trigger_amount) * deal.product.price * disc[:deal_multiplier] * -1)  %></td>
               <% else %>
                 <td colspan="3"><%= deal.deal_print %></td>
-                <td class="text-right"><%= number_to_currency(deal.discount_percentage * deal.product.price * disc[:deal_multiplier] * -1) %></td>
+                <td class="text-right"><%= number_to_currency(deal.product.price * disc[:deal_multiplier] * deal.discount_percentage * -1) %></td>
               <% end %>
             </tr>
           <% end %>

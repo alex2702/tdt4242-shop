@@ -22,4 +22,14 @@ class CartItemPolicy < ApplicationPolicy
   def update?
     @current_user.present? and (@current_user.id == Cart.find(@cart_item.cart_id).user_id or @current_user.admin?)
   end
+
+  # only for dashboard
+
+  def show?
+    @current_user.present? and @current_user.admin?
+  end
+
+  def edit?
+    @current_user.present? and @current_user.admin?
+  end
 end

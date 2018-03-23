@@ -12,7 +12,8 @@ class ApplicationPolicy
     end
 
     def resolve_admin
-      scope.none
+      #scope.none
+      scope
     end
   end
 end
