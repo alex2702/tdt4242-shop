@@ -1,7 +1,7 @@
 class OrdersController < ApplicationController
   def new
+    authorize Order
     @order = Order.new
-    authorize @order
   end
 
   def checkout
@@ -63,7 +63,7 @@ class OrdersController < ApplicationController
     respond_to do |format|
       if @order.save and @cart_item.nil?
         format.html { redirect_to @order, notice: 'Your order has been placed.' }
-        format.json { render :show, status: :created, location: @order }
+        format.json { render json: @order, status: :created, location: @order }
       else
         # if save is unsuccessful, roll back changes from above
         @order.order_items.each do |order_item|

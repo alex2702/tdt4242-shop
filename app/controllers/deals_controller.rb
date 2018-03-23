@@ -29,7 +29,7 @@ class DealsController < ApplicationController
     respond_to do |format|
       if @deal.save
         format.html { redirect_to deals_path, notice: 'The deal has been created successfully.' }
-        format.json { render :index, status: :created, location: @deal }
+        format.json { render json: @deal, status: :created, location: @deal }
       else
         format.html { render :new }
         format.json { render json: @deal.errors, status: :unprocessable_entity }
@@ -48,7 +48,7 @@ class DealsController < ApplicationController
     respond_to do |format|
       if @deal.update(deal_params)
         format.html { redirect_to deals_path, notice: 'The deal was successfully updated.' }
-        format.json { render :index, status: :ok }
+        format.json { render json: @deal, status: :ok, location: @deal }
       else
         format.html { render :edit }
         format.json { render json: @deal.errors, status: :unprocessable_entity }
@@ -64,7 +64,7 @@ class DealsController < ApplicationController
     @deal.destroy
     respond_to do |format|
       format.html { redirect_to deals_path, notice: 'The deal was successfully removed.' }
-      format.json { head :no_content }
+      format.json { head :no_content, status: :ok }
     end
   end
 

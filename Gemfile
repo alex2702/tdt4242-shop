@@ -11,7 +11,6 @@ gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.2'
 gem 'turbolinks', '~> 5'
-gem 'jbuilder', '~> 2.5'
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'capybara', '~> 2.13'
@@ -26,12 +25,10 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'administrate', '~> 0.9'
 gem 'bootstrap-sass'
-gem 'bourbon'
 gem 'devise'
 gem 'high_voltage'
 gem 'jquery-rails'
 gem 'pundit'
-gem 'therubyracer', :platform=>:ruby
 group :development do
   gem 'better_errors'
   gem 'hub', :require=>nil

@@ -83,7 +83,7 @@ class ProductsController < ApplicationController
     respond_to do |format|
       if @product.save
         format.html { redirect_to @product, notice: 'The product has been created successfully.' }
-        format.json { render :show, status: :created, location: @product }
+        format.json { render json: @product, status: :created, location: @product }
       else
         format.html { render :new }
         format.json { render json: @product.errors, status: :unprocessable_entity }
@@ -99,7 +99,7 @@ class ProductsController < ApplicationController
     respond_to do |format|
       if @product.update(product_params)
         format.html { redirect_to @product, notice: 'The product was successfully updated.' }
-        format.json { render :show, status: :ok, location: @product }
+        format.json { render json: @product, status: :ok, location: @product }
       else
         format.html { render :edit }
         format.json { render json: @product.errors, status: :unprocessable_entity }
@@ -114,7 +114,7 @@ class ProductsController < ApplicationController
     respond_to do |format|
       if @product.update(product_params)
         format.html { redirect_to manage_products_path, notice: "The stock level of #{@product.name} was successfully updated." }
-        format.json { render :manage, status: :ok, location: @product }
+        format.json { render json: @product, status: :ok, location: @product }
       else
         format.html { render :manage }
         format.json { render json: @product.errors, status: :unprocessable_entity }
@@ -130,7 +130,7 @@ class ProductsController < ApplicationController
     @product.destroy
     respond_to do |format|
       format.html { redirect_to manage_products_path, notice: 'The product was successfully removed.' }
-      format.json { head :no_content }
+      format.json { head :no_content, status: :ok }
     end
   end
 

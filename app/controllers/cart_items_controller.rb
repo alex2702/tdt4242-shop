@@ -11,7 +11,7 @@ class CartItemsController < ApplicationController
     @cart_item.destroy
     respond_to do |format|
       format.html { redirect_to '/cart', notice: 'The item was successfully removed.' }
-      format.json { head :no_content }
+      format.json { head :no_content, status: :ok }
     end
   end
 
@@ -29,7 +29,7 @@ class CartItemsController < ApplicationController
     respond_to do |format|
       if @cart_item.save
         format.html { redirect_to @cart, notice: 'The item was added to your cart.' }
-        format.json { render :show, status: :created, location: @cart }
+        format.json { render json: @cart_item, status: :created, location: @cart_item }
       else
         format.html { render :new }
         format.json { render json: @cart_item.errors, status: :unprocessable_entity }
@@ -45,7 +45,7 @@ class CartItemsController < ApplicationController
     respond_to do |format|
       if @cart_item.update(cart_item_params)
         format.html { redirect_to '/cart', notice: "The amount of #{@cart_item.product.name.pluralize(@cart_item.amount)} was successfully updated." }
-        format.json { render :edit_amount, status: :ok, location: @cart_item }
+        format.json { render json: @cart_item, status: :ok, location: @cart_item }
       else
         format.html { render :edit_amount }
         format.json { render json: @cart_item.errors, status: :unprocessable_entity }

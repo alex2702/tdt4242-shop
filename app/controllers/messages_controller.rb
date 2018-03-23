@@ -15,7 +15,6 @@ class MessagesController < ApplicationController
   # POST /messages
   def create
     authorize Message
-    #@message = Message.new(subject: message_params[:subject], body: message_params[:body], order_id: message_params[:order_id])
     @message = Message.new(message_params)
     @order = Order.find(message_params[:order_id])
 
@@ -26,7 +25,7 @@ class MessagesController < ApplicationController
           @order.update_attributes!(status: message_params[:new_status])
           StatusMailer.status_update(@order.user_id, @order.id, @message.subject, @message.body).deliver
           format.html { redirect_to order_path(id: message_params[:order_id]), notice: 'The message has been sent.' }
-          format.json { render :index, status: :created, location: @message }
+          format.json { render json: @message, status: :created, location: @message }
         end
       rescue ActiveRecord::ActiveRecordError => e
         logger.debug e
