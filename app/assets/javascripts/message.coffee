@@ -52,10 +52,11 @@ $(document).on "turbolinks:load", ->
 
   options =
     placement: (context, source) ->
-      position = $(source).parent().parent().position()
-      if position.left > 80
+      position = $(source).offset()
+      if position.left > 260
         return 'right'
       'top'
     trigger: 'focus'
+    container: 'body'
 
   $("#message_body").popover options

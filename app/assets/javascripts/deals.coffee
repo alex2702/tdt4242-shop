@@ -21,3 +21,24 @@ $(document).on "turbolinks:load", ->
 
   $("#deal_type").change ->
     set_fields()
+
+  # synchronize slider and text input fields for percentage
+  $("#discount_percentage_text_").change ->
+    $("#deal_discount_percentage").val($("#discount_percentage_text_").val())
+
+  $("#deal_discount_percentage").change ->
+    $("#discount_percentage_text_").val($("#deal_discount_percentage").val())
+
+  # configure popovers for form field explanations
+  options =
+    placement: (context, source) ->
+      position = $(source).offset()
+      console.log position
+      if position.left > 260
+        return 'right'
+      'top'
+    trigger: 'focus'
+    container: 'body'
+
+  $("#deal_trigger_amount").popover options
+  $("#deal_deal_amount").popover options
