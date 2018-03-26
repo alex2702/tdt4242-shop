@@ -1,5 +1,4 @@
 <h1 id="page-title">All Products<%= @products.count < Product.all.count ? " <small>#{@products.count} results</small>".html_safe : '' %></h1>
-
 <div class="row">
   <div class="col-sm-12 col-md-3">
     <div class="panel panel-default">
@@ -9,7 +8,7 @@
           <h4>Search</h4>
           <div class="form-group">
             <label for="search">Keyword</label>
-            <input type="text" class="form-control" id="search" onchange="searchInput(this)">
+            <input type="text" class="form-control" id="search" onchange="valueInput(this, 'search')">
           </div>
         </div>
 
@@ -39,11 +38,11 @@
           <h4>Filter by price</h4>
           <div class="form-group">
             <label for="lprice">Minimum Price</label>
-            <input type="number" class="form-control" id="lprice" onchange="priceInput(this, 'lprice')">
+            <input type="number" class="form-control" id="lprice" onchange="valueInput(this, 'lprice')">
           </div>
           <div class="form-group">
             <label for="hprice">Maximum Price</label>
-            <input type="number" class="form-control" id="hprice" onchange="priceInput(this, 'hprice')">
+            <input type="number" class="form-control" id="hprice" onchange="valueInput(this, 'hprice')">
           </div>
         </div>
       </div>
