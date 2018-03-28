@@ -30,10 +30,6 @@ class ProductsController < ApplicationController
       @products = @products.where("name LIKE ? or description LIKE ?", "%"+params[:search]+"%", "%"+params[:search]+"%")
     end
   
-    
-    
-    
-    
   end
 
   # GET /products/manage
