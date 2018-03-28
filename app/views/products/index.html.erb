@@ -1,7 +1,6 @@
 <% content_for :title do %>All Products<% end %>
 
 <h1 id="page-title">All Products<%= @products.count < Product.all.count ? " <small>#{@products.count} results</small>".html_safe : '' %></h1>
-
 <div class="row">
   <div class="col-sm-12 col-md-3">
     <div class="panel panel-default">
@@ -11,33 +10,29 @@
           <h4>Search</h4>
           <div class="form-group">
             <label for="search">Keyword</label>
-            <input type="text" class="form-control" id="search" onchange="searchInput(this)">
+            <input type="text" class="form-control" id="search" onchange="valueInput(this, 'search')">
           </div>
         </div>
 
         <div class="margin-top-small">
           <h4>Filter by brand</h4>
-          <% counter = 0 %>
           <% @all_brands.each do |brand| %>
             <div class="checkbox">
               <label>
-                <input id="b<%= counter %>" type="checkbox" onclick="checkboxClick(this, 'brand')"> <%= brand %>
+                <input id="<%= brand.gsub(' ', '+') %>" type="checkbox" onclick="checkboxClick(this, 'brand')"> <%= brand %>
               </label>
             </div>
-            <% counter += 1 %>
           <% end %>
         </div>
 
         <div class="margin-top-small">
           <h4>Filter by material</h4>
-          <% counter = 0 %>
           <% @all_materials.each do |material| %>
             <div class="checkbox">
               <label>
-                <input id="m<%= counter %>" type="checkbox" onclick="checkboxClick(this, 'material')"> <%= material %>
+                <input id="<%= material.gsub(' ', '+') %>" type="checkbox" onclick="checkboxClick(this, 'material')"> <%= material %>
               </label>
             </div>
-            <% counter += 1 %>
           <% end %>
         </div>
 
@@ -45,11 +40,11 @@
           <h4>Filter by price</h4>
           <div class="form-group">
             <label for="lprice">Minimum Price</label>
-            <input type="number" class="form-control" id="lprice" onchange="priceInput(this, 'lprice')">
+            <input type="number" class="form-control" id="lprice" onchange="valueInput(this, 'lprice')">
           </div>
           <div class="form-group">
             <label for="hprice">Maximum Price</label>
-            <input type="number" class="form-control" id="hprice" onchange="priceInput(this, 'hprice')">
+            <input type="number" class="form-control" id="hprice" onchange="valueInput(this, 'hprice')">
           </div>
         </div>
       </div>
