@@ -45,28 +45,30 @@ class OrdersController < ApplicationController
     respond_to do |format|
       begin
         ActiveRecord::Base.transaction do
-          # save order object without running validations yet, so we get the object ID
-          # validations will be run below
-          @order.save!(:validate => false)
-          # create order_items out of all cart_items
-          # decrease stock level of all cart_items by amount ordered
-          # it's no problem if we encounter a problem at one of the latter cart_items because the transaction will
-          # roll back completely in case of failure
-          @cart.cart_items.each do |cart_item|
-            cart_item.becomes!(OrderItem)
-            cart_item.update!(order_id: @order.id, cart_id: nil)
-            cart_item.product.stock_level -= cart_item.amount
-            cart_item.product.save!
+          begin
+            # save order object without running validations yet, so we get the object ID
+            # validations will be run below
+            @order.save!(:validate => false)
+            # create order_items out of all cart_items
+            # decrease stock level of all cart_items by amount ordered
+            # it's no problem if we encounter a problem at one of the latter cart_items because the transaction will
+            # roll back completely in case of failure
+            @cart.cart_items.each do |cart_item|
+              cart_item.becomes!(OrderItem)
+              cart_item.update!(order_id: @order.id, cart_id: nil)
+              cart_item.product.stock_level -= cart_item.amount
+              cart_item.product.save!
+            end
+            StatusMailer.status_update(@order.user_id, @order.id, "We have received your order", "Your order was received. Please note that this is not an order confirmation. You will receive a confirmation shortly.").deliver
+            # final save so all validations are run
+            @order.save!
+            format.html { redirect_to @order, notice: 'Your order has been placed.' }
+            format.json { render json: @order, status: :created, location: @order }
+          rescue ActiveRecord::ActiveRecordError
+            format.html { render :checkout }
+            format.json { render json: @order.errors, status: :unprocessable_entity }
+            format.js   { render :checkout, content_type: 'text/javascript' }
           end
-          StatusMailer.status_update(@order.user_id, @order.id, "We have received your order", "Your order was received. Please note that this is not an order confirmation. You will receive a confirmation shortly.").deliver
-          # final save so all validations are run
-          @order.save!
-          format.html { redirect_to @order, notice: 'Your order has been placed.' }
-          format.json { render json: @order, status: :created, location: @order }
-        rescue ActiveRecord::ActiveRecordError => e
-          format.html { render :checkout }
-          format.json { render json: @order.errors, status: :unprocessable_entity }
-          format.js   { render :checkout, content_type: 'text/javascript' }
         end
       end
     end
