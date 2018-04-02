@@ -25,7 +25,6 @@ class ProductsController < ApplicationController
     if priceStringToInt(params[:hprice]) != nil
       @products = @products.where("price <= ?", priceStringToInt(params[:hprice]))
     end
-    #This might be vulnerable to SQL injection, might need to use sanitize_sql_like
     if params[:search] != nil
       @products = @products.where("name LIKE ? or description LIKE ?", "%"+params[:search]+"%", "%"+params[:search]+"%")
     end

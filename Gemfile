@@ -35,4 +35,5 @@ group :development do
   gem 'rails_layout'
   gem 'letter_opener'
   gem 'binding_of_caller'
+  gem 'rails-erd', require: false
 end
