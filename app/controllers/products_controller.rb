@@ -29,34 +29,38 @@ class ProductsController < ApplicationController
     if params[:search] != nil
       @products = @products.where("name LIKE ? or description LIKE ?", "%"+params[:search]+"%", "%"+params[:search]+"%")
     end
-  
   end
 
   # GET /products/manage
+  # action for product management area that retrieves all product instances
   def manage
     authorize Product
     @products = Product.all
   end
 
   # GET /products/1
+  # get product instance with given ID
   def show
     authorize Product
     @product = Product.find(params[:id])
   end
 
   # GET /products/new
+  # restful action for creating a new product instance
   def new
     authorize Product
     @product = Product.new
   end
 
   # GET /products/1/edit
+  # restful action for editing existing product instances
   def edit
     authorize Product
     @product = Product.find(params[:id])
   end
 
   # POST /products
+  # creating a new product instance from given paramters
   def create
     authorize Product
     @product = Product.new(product_params)
@@ -74,6 +78,7 @@ class ProductsController < ApplicationController
   end
 
   # PATCH/PUT /products/1
+  # general update endpoint for product instances
   def update
     authorize Product
     @product = Product.find(params[:id])
@@ -89,6 +94,8 @@ class ProductsController < ApplicationController
     end
   end
 
+  # special method to only update the stock level of a product
+  # necessary because we have a special form with only one field (the stock level)
   def update_stock
     authorize Product
     @product = Product.find(params[:product][:id])
@@ -105,6 +112,7 @@ class ProductsController < ApplicationController
   end
 
   # DELETE /products/1
+  # destroy the product instance with the given id
   def destroy
     authorize Product
     @product = Product.find(params[:id])
@@ -121,12 +129,14 @@ class ProductsController < ApplicationController
   def product_params
     params.require(:product).permit(:name, :description, :stock_level, :price, :brand, :material, :weight)
   end
-  
+
+  # used for search, convert string to int
   def priceStringToInt(param_string)
     num = param_string.to_i
     num if num.to_s == param_string && num >= 0
   end
-  
+
+  # used for search, check for matching search term
   def notMatchingSearchTerm(term, product)
     if product.name.downcase.include? term.downcase
       return false

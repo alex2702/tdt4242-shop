@@ -1,11 +1,13 @@
 class OrdersController < ApplicationController
   include ProductItemsHelper
 
+  # restful action for creating a new order
   def new
     authorize Order
     @order = Order.new
   end
 
+  # checkout action, that creates a new order out of the cart of the current user
   def checkout
     @order = Order.new
     @cart = Cart.find_by(user_id: current_user.id)
@@ -13,6 +15,7 @@ class OrdersController < ApplicationController
     @total_amount, @total_discount, @discounts = calculate_total_amount(@cart.cart_items)
   end
 
+  # creating a new order from the given parameters
   def create
     # create new order object from form parameters
     @order = Order.new(order_params)
@@ -74,6 +77,7 @@ class OrdersController < ApplicationController
     end
   end
 
+  # gathers order information for the given user only
   def index
     authorize Order
     @orders = Order.where(user_id: current_user.id)
@@ -88,6 +92,7 @@ class OrdersController < ApplicationController
     end
   end
 
+  # action for the order management, gathers all relevant order data for all existing orders
   def manage
     authorize Order
     @orders = Order.all
@@ -102,6 +107,7 @@ class OrdersController < ApplicationController
     end
   end
 
+  # show the order instance with the given ID
   def show
     @order = Order.find(params[:id])
     authorize @order

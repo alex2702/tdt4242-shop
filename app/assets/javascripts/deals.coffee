@@ -33,7 +33,6 @@ $(document).on "turbolinks:load", ->
   options =
     placement: (context, source) ->
       position = $(source).offset()
-      console.log position
       if position.left > 260
         return 'right'
       'top'

@@ -1,6 +1,6 @@
 <% content_for :title do %>All Products<% end %>
 
-<h1 id="page-title">All Products<%= @products.count < Product.all.count ? " <small>#{@products.count} results</small>".html_safe : '' %></h1>
+<h1 id="page-title">All Products<%= @products.count < Product.all.count ? " <small>#{pluralize(@products.count, 'result')}</small>".html_safe : '' %></h1>
 <div class="row">
   <div class="col-sm-12 col-md-3">
     <div class="panel panel-default">

@@ -60,3 +60,4 @@ $(document).on "turbolinks:load", ->
     container: 'body'
 
   $("#message_body").popover options
+  $("#message_subject").popover options

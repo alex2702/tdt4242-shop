@@ -2,28 +2,32 @@ class DealsController < ApplicationController
   after_action :verify_authorized
 
   # GET /deals
+  # get and display all existing deals
   def index
     authorize Deal
     @deals = Deal.all
   end
 
   # GET /deals/new
+  # create a new deal instance
   def new
     authorize Deal
     @deal = Deal.new
   end
 
   # GET /products/1/edit
+  # frontend action, get deal with given ID to edit it
   def edit
     authorize Deal
     @deal = Deal.find(params[:id])
   end
 
   # POST /deals
+  # frontend action for creating a new deal instance
   def create
     authorize Deal
     @deal = Deal.new(deal_params)
-    # input param for percentage is 1..100, transform to float
+    # input param for percentage is 1..100, transform to float of 0..1
     @deal.discount_percentage = @deal.discount_percentage / 100
 
     respond_to do |format|
@@ -39,10 +43,12 @@ class DealsController < ApplicationController
   end
 
   # PATCH/PUT /deals/1
+  # restful endpoint for modifying a deal
   def update
     authorize Deal
+    # find deal with given ID
     @deal = Deal.find(params[:id])
-    logger.debug params[:deal][:discount_percentage]
+    # input param for percentage is 1..100, transform to float of 0..1
     params[:deal][:discount_percentage] = params[:deal][:discount_percentage].to_f / 100
 
     respond_to do |format|
@@ -58,6 +64,7 @@ class DealsController < ApplicationController
   end
 
   # DELETE /deals/1
+  # find deal instance with given ID and destroy it
   def destroy
     authorize Deal
     @deal = Deal.find(params[:id])

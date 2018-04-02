@@ -1,0 +1,11 @@
+<% if @message.errors.any? %>
+  <div id="error_explanation">
+    <h2>We encountered <%= pluralize(@message.errors.count, "error") %> when sending this message:</h2>
+
+    <ul>
+      <% @message.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

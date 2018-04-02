@@ -1,10 +1,12 @@
 class CartItemsController < ApplicationController
+  # create a new cart_item instance
   def new
     authorize CartItem
     @cart_item = CartItem.new
   end
 
   # DELETE /cart_item/1
+  # find cart_item instance with given ID and destroy it
   def destroy
     @cart_item = CartItem.find(params[:id])
     authorize @cart_item
@@ -15,14 +17,19 @@ class CartItemsController < ApplicationController
     end
   end
 
+  # create a new cart_item instance from parameters and add it to the given cart
   def add_to_cart
+    # get the cart of the user currently logged in
     @cart = current_user.cart
     authorize @cart
 
+    # check if the user has an item of the same product in the cart already
     if @cart.cart_items.where(product_id: params[:cart_item][:product]).count.positive?
+      # if yes, get the cart item instance and increase the amount by the given number
       @cart_item = @cart.cart_items.where(product_id: params[:cart_item][:product]).first
       @cart_item.amount += params[:cart_item][:amount].to_i
     else
+      # if no, create a new cart item instance
       @cart_item = CartItem.new(cart_id: @cart.id, product_id: params[:cart_item][:product], amount: params[:cart_item][:amount])
     end
 
@@ -39,6 +46,7 @@ class CartItemsController < ApplicationController
   end
 
   # PATCH/PUT /cart_items/1
+  # updating an existing cart_item instance
   def update
     @cart_item = CartItem.find(params[:id])
     authorize @cart_item
