@@ -17,7 +17,7 @@ Devise.setup do |config|
   config.mailer_sender = Rails.application.secrets.email_sender
 
   # Configure the class responsible to send e-mails.
-  config.mailer = 'TdtMailer'
+  #config.mailer = 'TdtMailer'
 
   # Configure the parent class responsible to send e-mails.
   # config.parent_mailer = 'ActionMailer::Base'
