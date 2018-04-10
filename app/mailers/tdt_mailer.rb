@@ -4,6 +4,8 @@ class TdtMailer < Devise::Mailer
   default template_path: 'devise/mailer' # to make sure that your mailer uses the devise views
 
   def devise_mail(record, action, opts={})
+    logger.debug Rails.application.secrets.email_sender
+    logger.debug Rails.application.secrets.email_domain_name
     initialize_from_record(record)
     mail(headers_for(action, opts)) do |format|
       format.text
