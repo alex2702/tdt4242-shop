@@ -7,7 +7,7 @@
       <table class="table table-striped">
         <thead>
         <tr>
-          <% if current_user.present? and current_user.role == 'customer' %>
+          <% if current_user.present? and (current_user.admin? or current_user.seller?) %>
             <th>Deal Name</th>
           <% else %>
             <th>Type</th>
@@ -19,7 +19,7 @@
         </thead>
         <tbody>
         <% @deals.each do |deal| %>
-          <% if current_user.present? and current_user.role == 'customer' %>
+          <% if current_user.present? and (current_user.admin? or current_user.seller?) %>
             <tr>
               <td><%= deal.deal_print %></td>
             </tr>

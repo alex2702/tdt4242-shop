@@ -15,11 +15,11 @@
     </div>
     <div class="form-group">
       <div><%= f.label(:subject, class: "control-label") %></div>
-      <%= f.text_field :subject, required: true, class: 'form-control', disabled: 'disabled' %>
+      <%= f.text_field :subject, required: true, class: 'form-control', disabled: 'disabled', data: { content: 'This is the email\'s subject as the customer will receive it.' } %>
     </div>
     <div class="form-group">
       <div><%= f.label(:body, class: "control-label") %></div>
-      <%= f.text_area :body, required: true, class: 'form-control', disabled: 'disabled', rows: 5, data: {content: 'here'} %>
+      <%= f.text_area :body, required: true, class: 'form-control', disabled: 'disabled', rows: 5, data: {content: 'The content is enclosed in a general email template, so you don\'t need to specify a salutation etc.'} %>
     </div>
   </div>
   <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">

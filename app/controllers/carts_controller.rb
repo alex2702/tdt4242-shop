@@ -1,11 +1,13 @@
 class CartsController < ApplicationController
   include ProductItemsHelper
 
+  # create a new cart instance
   def new
     authorize Cart
     @cart = Cart.new
   end
 
+  # restful action for creating a new cart instance
   def create
     # create a new cart
     @cart = Cart.new
@@ -26,6 +28,7 @@ class CartsController < ApplicationController
     end
   end
 
+  # gather required information to display a cart instance
   def show
     @cart = Cart.find_by(user_id: current_user.id)
     authorize @cart

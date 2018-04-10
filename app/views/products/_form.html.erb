@@ -30,6 +30,6 @@
       <%= f.label(:weight, class: "control-label") %>
       <%= f.number_field(:weight, in: 0..100000, step: 0.01, class: "form-control", required: true) %>
     </div>
-    <%= f.submit(class: "btn btn-primary pull-right margin-top-small") %>
+    <%= f.submit(class: "btn btn-primary pull-right margin-top-small", data: { confirm: 'Would you like to save the product?'}) %>
   </div>
 <% end %>

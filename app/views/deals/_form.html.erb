@@ -1,6 +1,6 @@
-<%= form_for @deal, :remote => true, :html => {class: ['form-horizontal', 'row', 'multi-col-form']} do |f| %>
+<%= form_for @deal, :remote => true, :html => {class: ['row']} do |f| %>
   <% @deal.discount_percentage.present? ? discount_percentage = @deal.discount_percentage : discount_percentage = 0.5 %>
-  <div class="col-xs-12 col-md-6">
+  <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
     <div class="form-group">
       <div><%= f.label(:type, class: "control-label") %></div>
       <%= f.select :type, options_for_select([["Volume-based discount", "VolumeDeal"], ["Percentage-based discount", "PercentageDeal"]], @deal.type), { include_blank: 'Please select' }, class: "form-control", required: true %>
@@ -9,29 +9,27 @@
       <div><%= f.label(:product_id, class: "control-label") %></div>
       <%= f.select :product_id, Product.all.collect{ |p| [ p.name, p.id ] }, { include_blank: 'Please select' }, class: "form-control", required: true %>
     </div>
-  </div>
-  <div class="col-xs-12 col-md-6">
     <div class="form-group volume-based-deal hidden">
       <%= f.label(:trigger_amount, class: "control-label") %>
-      <%= f.number_field(:trigger_amount, in: 0..100000, step: 1, class: "form-control", default: 0) %>
+      <%= f.number_field(:trigger_amount, in: 0..100000, step: 1, class: "form-control", default: 0, data: {content: 'The Trigger Amount is the amount of items that a customer has to purchase in order to trigger the deal at all. E.g. for a "Buy 2, get 1 free" deal, the trigger amount is 3.'} ) %>
     </div>
     <div class="form-group volume-based-deal hidden">
       <%= f.label(:deal_amount, class: "control-label") %>
-      <%= f.number_field(:deal_amount, in: 0..100000, step: 1, class: "form-control", default: 0) %>
+      <%= f.number_field(:deal_amount, in: 0..100000, step: 1, class: "form-control", default: 0, data: {content: 'The Deal Amount is the amount of items that the customer will receive for free. E.g. for a "Buy 2, get 1 free" deal, the deal amount is 1.'} ) %>
     </div>
     <div class="form-group percentage-based-deal hidden">
       <%= f.label(:discount_percentage, class: "control-label") %>
       <div class="row">
-        <div class="col-xs-10">
-          <%= f.range_field(:discount_percentage, in: 1..100, value: discount_percentage * 100, class: "form-control", oninput: "deal_percentage_display.value = deal_discount_percentage.value + ' %'") %>
+        <div class="col-xs-9">
+          <%= f.range_field(:discount_percentage, in: 1..100, value: discount_percentage * 100, class: "form-control") %>
         </div>
-        <div class="col-xs-2">
-          <output name="deal_percentage_display" id="deal_percentage_display"><%= number_with_precision(discount_percentage * 100, precision: 0) %> %</output>
+        <div class="col-xs-3 text-right percent-input">
+            <%= number_field(:discount_percentage_text, nil, in: 1..100, step: 1, class: "form-control", value: discount_percentage * 100) %> %
         </div>
       </div>
     </div>
   </div>
-  <div class="col-xs-12">
-    <%= f.submit(class: "btn btn-primary pull-right margin-top-small") %>
+  <div class="col-xs-12 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+    <%= f.submit(class: "btn btn-primary pull-right margin-top-small", data: { confirm: 'Would you like to save the deal?'}) %>
   </div>
 <% end %>

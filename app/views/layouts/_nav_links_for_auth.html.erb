@@ -1,10 +1,6 @@
 <% if user_signed_in? %>
   <li><%= link_to 'My Account', edit_user_registration_path %></li>
   <li role="separator" class="divider"></li>
-  <% if current_user.try(:admin?) %>
-    <li><%= link_to 'Database Admin', '/admin', target: '_blank' %></li>
-    <li><%= link_to 'Manage Users', users_path %></li>
-  <% end %>
   <li><%= link_to 'Logout', destroy_user_session_path, :method=>'delete' %></li>
 <% else %>
   <li><%= link_to 'Login', new_user_session_path %></li>

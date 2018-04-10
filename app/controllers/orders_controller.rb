@@ -1,11 +1,13 @@
 class OrdersController < ApplicationController
   include ProductItemsHelper
 
+  # restful action for creating a new order
   def new
     authorize Order
     @order = Order.new
   end
 
+  # checkout action, that creates a new order out of the cart of the current user
   def checkout
     @order = Order.new
     @cart = Cart.find_by(user_id: current_user.id)
@@ -13,6 +15,7 @@ class OrdersController < ApplicationController
     @total_amount, @total_discount, @discounts = calculate_total_amount(@cart.cart_items)
   end
 
+  # creating a new order from the given parameters
   def create
     # create new order object from form parameters
     @order = Order.new(order_params)
@@ -45,33 +48,36 @@ class OrdersController < ApplicationController
     respond_to do |format|
       begin
         ActiveRecord::Base.transaction do
-          # save order object without running validations yet, so we get the object ID
-          # validations will be run below
-          @order.save!(:validate => false)
-          # create order_items out of all cart_items
-          # decrease stock level of all cart_items by amount ordered
-          # it's no problem if we encounter a problem at one of the latter cart_items because the transaction will
-          # roll back completely in case of failure
-          @cart.cart_items.each do |cart_item|
-            cart_item.becomes!(OrderItem)
-            cart_item.update!(order_id: @order.id, cart_id: nil)
-            cart_item.product.stock_level -= cart_item.amount
-            cart_item.product.save!
+          begin
+            # save order object without running validations yet, so we get the object ID
+            # validations will be run below
+            @order.save!(:validate => false)
+            # create order_items out of all cart_items
+            # decrease stock level of all cart_items by amount ordered
+            # it's no problem if we encounter a problem at one of the latter cart_items because the transaction will
+            # roll back completely in case of failure
+            @cart.cart_items.each do |cart_item|
+              cart_item.becomes!(OrderItem)
+              cart_item.update!(order_id: @order.id, cart_id: nil)
+              cart_item.product.stock_level -= cart_item.amount
+              cart_item.product.save!
+            end
+            StatusMailer.status_update(@order.user_id, @order.id, "We have received your order", "Your order was received. Please note that this is not an order confirmation. You will receive a confirmation shortly.").deliver
+            # final save so all validations are run
+            @order.save!
+            format.html { redirect_to @order, notice: 'Your order has been placed.' }
+            format.json { render json: @order, status: :created, location: @order }
+          rescue ActiveRecord::ActiveRecordError
+            format.html { render :checkout }
+            format.json { render json: @order.errors, status: :unprocessable_entity }
+            format.js   { render :checkout, content_type: 'text/javascript' }
           end
-          StatusMailer.status_update(@order.user_id, @order.id, "We have received your order", "Your order was received. Please note that this is not an order confirmation. You will receive a confirmation shortly.").deliver
-          # final save so all validations are run
-          @order.save!
-          format.html { redirect_to @order, notice: 'Your order has been placed.' }
-          format.json { render json: @order, status: :created, location: @order }
-        rescue ActiveRecord::ActiveRecordError => e
-          format.html { render :checkout }
-          format.json { render json: @order.errors, status: :unprocessable_entity }
-          format.js   { render :checkout, content_type: 'text/javascript' }
         end
       end
     end
   end
 
+  # gathers order information for the given user only
   def index
     authorize Order
     @orders = Order.where(user_id: current_user.id)
@@ -86,6 +92,7 @@ class OrdersController < ApplicationController
     end
   end
 
+  # action for the order management, gathers all relevant order data for all existing orders
   def manage
     authorize Order
     @orders = Order.all
@@ -100,6 +107,7 @@ class OrdersController < ApplicationController
     end
   end
 
+  # show the order instance with the given ID
   def show
     @order = Order.find(params[:id])
     authorize @order

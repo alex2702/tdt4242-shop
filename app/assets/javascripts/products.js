@@ -3,189 +3,138 @@
  * between them
  */
 
-function createList(paramString, paramName) {
-    var pos = paramString.search(paramName);
-    if (pos != -1) {
-        var tempParamString = paramString.substring(pos + paramName.length);
-        var endpos = tempParamString.indexOf("&");
-        if (endpos != -1) {
+const PARAMS = ["brand", "material", "lprice", "hprice", "search"]
+
+/* 
+ * Attempts to get the parameter value from a given parameter string and the parameter name
+ * returns null if the parameter name is not found in the parameter string
+ */
+function getParam(paramString, paramName) {
+    let pos = paramString.search(paramName + "=");
+    if (pos !== -1){
+        let tempParamString = paramString.substring(pos + paramName.length + 1);
+        let endpos = tempParamString.indexOf("&");
+        if (endpos !== -1) {
             tempParamString = tempParamString.substring(0, endpos);
         }
-        var list = tempParamString.split("_");
-        return list.slice(0, list.length - 1);
+        return tempParamString;
     } else {
         return null;
     }
 }
-
-function getPrice(paramString, paramName) {
-    var pos = paramString.search(paramName);
-    if (pos != -1) {
-        var tempParamString = paramString.substring(pos + paramName.length);
-        var endpos = tempParamString.indexOf("&");
-        if (endpos != -1) {
-            tempParamString = tempParamString.substring(0, endpos);
-        }
-        return tempParamString
-    } else {
-        return null;
-    }
-}
-
-function searchString(paramString) {
-    var pos = paramString.search("search=");
-    if (pos != -1) {
-        return paramString.substring(pos + 7);
-    } else {
-        return null;
+/*
+ * Removes all empty strings from an array
+ */
+function removeEmptyStringsFromArray(array) {
+    let pos = array.indexOf("");
+    while (pos !== -1) {
+        array.splice(pos, 1);
+        pos = array.indexOf("");
     }
 }
 
 /*
- * This function creates a list of the parameters in the query string in the URL, the two first elements also being
- * lists, functions above are helper functions for this
+ * Creates a dictionary containing the values of the parameters in the URL
  */
-
-function listFromParams() {
-    var brand, material, lprice, hprice;
-    var paramString = window.location.href;
-    var pos = paramString.indexOf("?");
-
-    if (pos != -1) {
-        paramString = paramString.substring(pos + 1);
-        brand = createList(paramString, "brand=");
-        material = createList(paramString, "material=");
-        lprice = getPrice(paramString, "lprice=");
-        hprice = getPrice(paramString, "hprice=");
-        search = searchString(paramString);
-        return [brand, material, lprice, hprice, search];
-    } else {
-        return [null, null, null, null, null];
-    }
+function dictFromParams() {
+    let dict = {};
+    let paramString = window.location.href;
+    let pos = paramString.indexOf("?");
+    
+    PARAMS.forEach(function(paramName) {
+        let paramValue = getParam(paramString, paramName);
+        if (paramValue !== null) {
+            let array = getParam(paramString, paramName).split('_');
+            removeEmptyStringsFromArray(array);
+            if (array.length !== 0) {
+                dict[paramName] = array;
+            } else {
+                dict[paramName] = null;
+            }
+        } else {
+            dict[paramName] = null;
+        }
+    });
+    return dict;
 }
 
-
 /*
- * This function builds the query string for the URL from the listed created by listFromParams()
+ * Builds the query part of the URL and changes the URL to that, causing a GET request with the new URL
  */
-
-function buildQueryUrl(list) {
-    var queryString = "?";
-    if (list[0] !== null && list[0].length != 0) {
-        queryString += "brand=";
-        for (i = 0; i < list[0].length; i++) {
-            queryString += list[0][i] + "_";
+function buildQueryUrl(dict) {
+    let queryString = "?";
+    PARAMS.forEach(function(paramName) {
+        if (dict[paramName] !== null) {
+            if (queryString !== "?") {
+                queryString += "&";
+            }
+            queryString += paramName + "=";
+            dict[paramName].forEach(function(paramValue) {
+                if (queryString[queryString.length - 1] !== "=") {
+                    queryString += "_";
+                }
+                queryString += paramValue;
+            });
         }
-    }
-    if (list[1] !== null && list[1].length != 0) {
-        if (queryString != "?") {
-            queryString += "&";
-        }
-        queryString += "material=";
-        for (i = 0; i < list[1].length; i++) {
-            queryString += list[1][i] + "_";
-        }
-    }
-    if (list[2] !== null && list[2] !== "") {
-        if (queryString != "?") {
-            queryString += "&";
-        }
-        queryString += "lprice=" + list[2];
-    }
-    if (list[3] !== null && list[3] !== "") {
-        if (queryString != "?") {
-            queryString += "&";
-        }
-        queryString += "hprice=" + list[3];
-    }
-    if (list[4] !== null && list[4] !== "") {
-        if (queryString != "?") {
-            queryString += "&";
-        }
-        queryString += "search=" + list[4];
-    }
-    if (queryString == "?") {
-        queryString = "";
-    }
+    });
     return queryString;
 }
 
+/*
+ * On a checkbox click, creates a parameter value dictionary and updates it with the changed checkbox value before changing in the URL,
+ * causing a GET request to be sent with the new URL
+ */
 function checkboxClick(checkbox, type) {
-    var list = listFromParams();
+    let dict = dictFromParams();
     if (checkbox.checked) {
-        if (type == "brand") {
-            if (list[0] === null) {
-                list[0] = [checkbox.id];
-            } else {
-                if (list[0].indexOf(checkbox.id) == -1) {
-                    list[0].push(checkbox.id);
-                }
+        if (dict[type] === null) {
+            dict[type] = [checkbox.id];
+        } else {
+            if (dict[type].indexOf(checkbox.id) === -1) {
+                dict[type].push(checkbox.id);
             }
         }
-        if (type == "material") {
-            if (list[1] === null) {
-                list[1] = [checkbox.id];
-            } else {
-                if (list[1].indexOf(checkbox.id) == -1) {
-                    list[1].push(checkbox.id);
-                }
-            }
-        }
-        window.location.search = buildQueryUrl(list);
     } else {
-        if (type == "brand") {
-            if (list[0] !== null) {
-                var pos = list[0].indexOf(checkbox.id);
-                if (pos != -1) {
-                    list[0].splice(pos, 1);
+        if (dict[type] !== null) {
+            let pos = dict[type].indexOf(checkbox.id);
+            if (pos !== -1) {
+                dict[type].splice(pos, 1);
+                if (dict[type].length === 0) {
+                    dict[type] = null;
                 }
             }
         }
-        if (type == "material") {
-            if (list[1] !== null) {
-                var pos = list[1].indexOf(checkbox.id);
-                if (pos != -1) {
-                    list[1].splice(pos, 1);
-                }
-            }
-        }
-        window.location.search = buildQueryUrl(list);
     }
+    window.location.search = buildQueryUrl(dict);
 }
 
-function priceInput(price, type) {
-    var list = listFromParams();
-    if (type == "lprice") {
-        list[2] = price.value;
-    }
-    if (type == "hprice") {
-        list[3] = price.value;
-    }
-    window.location.search = buildQueryUrl(list);
+/*
+ * For search bar and price inputs, replaces URL value with the input value, same way as checkboxClick().
+ */
+function valueInput(input, type) {
+    let dict = dictFromParams();
+    dict[type] = [input.value];
+    window.location.search = buildQueryUrl(dict);
 }
 
-function searchInput(searchBar) {
-    var list = listFromParams();
-    list[4] = searchBar.value;
-    window.location.search = buildQueryUrl(list);
-}
-
-/* This runs on page load, updates filter/search value to those in the query url */
+/* 
+ *This runs on page load, updates filter/search value to those in the query url 
+ */
 $(document).ready(function() {
-    var queryParams = listFromParams();
-    for (i = 0; i < 2; i++) {
-        if (queryParams[i] != null) {
-            for (j = 0; j < queryParams[i].length; j++) {
-                document.getElementById(queryParams[i][j]).checked = true;
-            }
+    let queryParams = dictFromParams();
+    PARAMS.forEach(function(paramName) {
+        if (queryParams[paramName] !== null) {
+            queryParams[paramName].forEach(function(paramValue) {
+                let element = document.getElementById(paramValue);
+                if (element !== null) {
+                    element.checked = true;
+                } else {
+                    element = document.getElementById(paramName);
+                    element.value = paramValue;
+                }
+            });
         }
-    }
-
-    queryParams[2] != null ? document.getElementById("lprice").value = queryParams[2] : '';
-    queryParams[3] != null ? document.getElementById("hprice").value = queryParams[3] : '';
-    queryParams[4] != null ? document.getElementById("search").value = queryParams[4] : '';
-
-    /* custom error message for amount selection of products */
+    });
     inputs = document.getElementsByClassName('amount-input');
     for(var i = 0; i < inputs.length; i++) {
         (function(index) {
@@ -199,7 +148,4 @@ $(document).ready(function() {
             });
         })(i);
     }
-
-
-
 });

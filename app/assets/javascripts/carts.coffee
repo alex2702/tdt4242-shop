@@ -5,7 +5,6 @@
 #custom error message for amount selection of products
 $(document).on "turbolinks:load", ->
   inputs = document.getElementsByClassName('amount-input')
-  console.log inputs.length
   i = 0
   for value, index in inputs
     inputs[index].addEventListener 'invalid', ((e) ->
